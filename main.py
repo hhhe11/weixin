@@ -65,13 +65,13 @@ def get_weather(region):
 
     if forecast_response["code"] == "200":
         # 提取当天（这里假设是forecast_response['daily'][0]表示当天）的最高温度和最低温度
-        temp_max = forecast_response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
         temp_min = forecast_response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
+        temp_max = forecast_response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     else:
         print("获取天气预报信息出错，无法获取最高温度和最低温度")
-        temp_max = "N/A"
         temp_min = "N/A"
-    return weather, temp, wind_dir, temp_max, temp_min
+        temp_max = "N/A"
+    return weather, temp, wind_dir, temp_min,temp_max
     
  
  
@@ -129,7 +129,7 @@ def get_ciba():
     return note_ch, note_en
  
  
-def send_message(to_user, access_token, region_name, weather, temp, temp_max, temp_min,wind_dir, note_ch, note_en):
+def send_message(to_user, access_token, region_name, weather, temp,wind_dir, temp_min,temp_max, note_ch, note_en):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -171,18 +171,18 @@ def send_message(to_user, access_token, region_name, weather, temp, temp_max, te
                 "value": temp,
                 "color": get_color()
             },
-            "temp_min": {
-                "value": temp_min,
-                "color": get_color()
-            },
-            "temp_max": {
-                "value": temp_max,
-                "color": get_color()
-            },
             "wind_dir": {
                 "value": wind_dir,
                 "color": get_color()
-            },
+            };
+            "temp_min": {
+                "value": temp_min,
+                "color": get_color()
+            };
+            "temp_max": {
+                "value": temp_max,
+                "color": get_color()
+            };
             "love_day": {
                 "value": love_days,
                 "color": get_color()
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     users = config["user"]
     # 传入地区获取天气信息
     region = config["region"]
-    weather, temp, temp_max,temp_min, wind_dir = get_weather(region)
+    weather, temp,temp_min, temp_max,wind_dir = get_weather(region)
     note_ch = config["note_ch"]
     note_en = config["note_en"]
     if note_ch == "" and note_en == "":
@@ -251,5 +251,5 @@ if __name__ == "__main__":
         note_ch, note_en = get_ciba()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, region, weather, temp, temp_max, temp_min, wind_dir, note_ch, note_en)
+        send_message(user, accessToken, region, weather, temp, wind_dir, temp_min,temp_max, note_ch, note_en)
     os.system("pause")
