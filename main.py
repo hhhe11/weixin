@@ -56,10 +56,6 @@ def get_weather(region):
     weather = response["now"]["text"]
     # 当前温度
     temp = response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
-    #最低溫度
-    min_temp = response ["min"]["temp"]
-    #最高溫度
-    max_temp = response ["max"]["temp"]
     # 风向
     wind_dir = response["now"]["windDir"]
     # 新增：获取未来一天天气预报信息的URL及请求，用于获取最高温和最低温
@@ -73,7 +69,7 @@ def get_weather(region):
     else:
         print("获取天气预报信息出错，无法获取最高温度和最低温度")
         temp_max = "N/A"
-        temp_min = "N/A
+        temp_min = "N/A"
      return weather, temp, wind_dir, temp_max, temp_min
  
  
@@ -173,12 +169,12 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": temp,
                 "color": get_color()
             },
-            "min_temp": {
-                "value": min_temp,
+            "temp_min": {
+                "value": temp_min,
                 "color": get_color()
             },
-            "max_temp": {
-                "value": max_temp,
+            "temp_max": {
+                "value": temp_max,
                 "color": get_color()
             },
             "wind_dir": {
@@ -245,7 +241,7 @@ if __name__ == "__main__":
     users = config["user"]
     # 传入地区获取天气信息
     region = config["region"]
-    weather, temp, min_temp, max_temp, wind_dir = get_weather(region)
+    weather, temp, temp_max,temp_min, wind_dir = get_weather(region)
     note_ch = config["note_ch"]
     note_en = config["note_en"]
     if note_ch == "" and note_en == "":
@@ -253,5 +249,5 @@ if __name__ == "__main__":
         note_ch, note_en = get_ciba()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, region, weather, temp, min_temp, max_temp, wind_dir, note_ch, note_en)
+        send_message(user, accessToken, region, weather, temp, temp_max, temp_min, wind_dir, note_ch, note_en)
     os.system("pause")
