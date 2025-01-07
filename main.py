@@ -5,7 +5,8 @@ from datetime import datetime, date
 from zhdate import ZhDate
 import sys
 import os
- 
+import requests
+
  
 def get_color():
     # 获取随机颜色
@@ -71,6 +72,9 @@ def get_weather(region):
         temp_max = "N/A"
         temp_min = "N/A"
     return weather, temp, wind_dir, temp_max, temp_min
+    except requests.RequestException as e:
+        print(f"网络请求出现异常: {e}")
+        sys.exit(1)
  
  
 def get_birthday(birthday, year, today):
