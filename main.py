@@ -70,7 +70,7 @@ def get_weather(region):
         print("获取天气预报信息出错，无法获取最高温度和最低温度")
         temp_max = "N/A"
         temp_min = "N/A"
-     return weather, temp, wind_dir, temp_max, temp_min
+    return weather, temp, wind_dir, temp_max, temp_min
  
  
 def get_birthday(birthday, year, today):
